@@ -3,7 +3,7 @@ import { StyleSheet, View,} from 'react-native'
 import MapView, {Marker, Callout} from 'react-native-maps'
 import {useState} from 'react'
 import CustomMarker from './CustomMarker'
-import {collection, onSnapshot} from 'firebase/firestore';
+import {collection, onSnapshot, getDocs, query, where} from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 export default function HomePage({route, navigation}) {
@@ -14,13 +14,33 @@ export default function HomePage({route, navigation}) {
       })
 
       const [newcoordinate, setNewCoordinate] = useState(null)
+      const [currentUser, setCurrentUser] = useState(null);
 
       const user = route.params.user
-      console.log(user.email)
+
+      useEffect(() => {
+        const fetchCurrentUser = async () => {
+            try {
+                const userSnapshot = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
+                if (!userSnapshot.empty) {
+                    const userData = userSnapshot.docs[0].data();
+                    setCurrentUser(userData);
+                } else {
+                    console.log('User not found in the database');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+  
+        if (user) {
+            fetchCurrentUser();
+        }
+    }, [user]);
  
       const handleMarkerDragEnd = (e) => {
         const droppedCoordinate = e.nativeEvent.coordinate;
-        navigation.navigate('Add Moment', { newcoordinate: droppedCoordinate, userData: user });
+        navigation.navigate('Add Moment', { newcoordinate: droppedCoordinate, userData: currentUser });
         setNewCoordinate(droppedCoordinate);
         setDragC({ latitude: droppedCoordinate.latitude + 0.0001, longitude: droppedCoordinate.longitude + 0.0001 });
       }
@@ -36,6 +56,9 @@ export default function HomePage({route, navigation}) {
         // Cleanup function
         return () => unsubscribe();
     }, []);
+
+    
+
         
     return (
     <View style={styles.container}>

@@ -29,7 +29,7 @@ export default function App() {
       <Stack.Screen name="Moments" component={HomePage} options={{headerLeft: null}}/>
       <Stack.Screen name="Add Moment" component={Moment} />
     </Stack.Navigator>
-    </NavigationContainer>
+      </NavigationContainer>
   );
 }
 

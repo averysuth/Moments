@@ -23,7 +23,7 @@ export default function Moment({route, navigation}){
 
     const handleAddMoment = () => {
         saveRecord("image", url, title, caption, coordinate.latitude, coordinate.longitude, user.username)
-        navigation.navigate('Moments')
+        navigation.navigate('Moments', {user})
     }
 
     useEffect(() => {
