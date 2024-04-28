@@ -1,20 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { StyleSheet, View} from 'react-native'
+import Moment from './components/moment'
+import HomePage from './components/HomePage'
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SignIn from './components/signIn'
 
 export default function App() {
+
+  const Stack = createNativeStackNavigator();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+    <Stack.Navigator initialRouteName='Welcome' screenOptions={{
+          headerStyle: {
+            backgroundColor: '#A8DACD', 
+          },
+          headerTintColor: 'white', 
+          headerTitleStyle: {
+            fontWeight: 'normal',
+            fontFamily:'Thonburi',
+            textShadowColor: 'black',
+            textShadowRadius:5,
+            fontSize: 20,
+          },
+        }}>
+      <Stack.Screen name="Welcome" component={SignIn} options={ {headerShown: false} }/>
+      <Stack.Screen name="Moments" component={HomePage} options={{headerLeft: null}}/>
+      <Stack.Screen name="Add Moment" component={Moment} />
+    </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
 });
